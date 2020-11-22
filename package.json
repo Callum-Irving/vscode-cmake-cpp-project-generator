@@ -17,7 +17,7 @@
     "commands": [
       {
         "command": "cpp-cmake-project-generator.createProject",
-        "title": "Create Project"
+        "title": "C++ Project Generator: Create Project"
       }
     ]
   },
