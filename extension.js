@@ -18,7 +18,10 @@ function activate(context) {
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
     'cpp-cmake-project-generator.createProject',
-    () => {
+    async () => {
+      // Ask user to open a folder or create a new one
+      await vscode.commands.executeCommand('vscode.openFolder');
+
       // First, create a CMake project using the cmake tools extension from microsoft
       // TODO doesn't work if the user presses create new cmakelists
       // I have kind of fixed this by displaying an error message
