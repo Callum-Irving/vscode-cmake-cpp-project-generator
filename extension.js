@@ -39,19 +39,21 @@ function activate(context) {
           vscode.window.showErrorMessage(
             'CMake Tools extenstion failed to create project, please exit and try again'
           );
-          // TODO delete build folder
-          fs.rmdir(path.join(folderPath, 'build'), (err) => {
-            vscode.window.showErrorMessage('Error deleting build folder'); // TODO make this error message better
-          });
           return;
         }
 
         // Add src and include directories
         fs.mkdir(path.join(folderPath, 'src'), (err) => {
-          vscode.window.showErrorMessage(err.toString());
+          vscode.window.showErrorMessage(
+            'Error creating src directory, ignore this message if you created it yourself'
+          );
+          console.error(err);
         });
         fs.mkdir(path.join(folderPath, 'include'), (err) => {
-          vscode.window.showErrorMessage(err.toString());
+          vscode.window.showErrorMessage(
+            'Error creating include directory, ignore this message if you created it yourself'
+          );
+          console.error(err);
         });
 
         // Modify CMakeLists.txt to use include and src directories
@@ -61,6 +63,11 @@ function activate(context) {
           path.join(folderPath, 'CMakeLists.txt'),
           'ascii',
           (err, CMakeLists) => {
+            if (err) {
+              vscode.window.showErrorMessage('Error reading CMakeLists.txt');
+              console.error(err);
+              return;
+            }
             // Insert add variable into CMakeLists
             const startInsert = CMakeLists.indexOf('add_executable');
             let endInsert = startInsert;
@@ -74,7 +81,8 @@ function activate(context) {
 
             // Rewrite CMakeLists.txt
             fs.writeFile(path.join(folderPath, 'CMakeLists.txt'), CMakeLists, (err) => {
-              vscode.window.showErrorMessage(err.toString());
+              vscode.window.showErrorMessage('Error rewriting CMakeLists.txt');
+              console.error(err);
             });
 
             // Move main.cpp to src folder
@@ -82,7 +90,8 @@ function activate(context) {
               path.join(folderPath, 'main.cpp'),
               path.join(folderPath, 'src', 'main.cpp'),
               (err) => {
-                vscode.window.showErrorMessage(err.toString());
+                vscode.window.showErrorMessage('Error moving main.cpp to src folder');
+                console.error(err);
               }
             );
           }
