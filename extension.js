@@ -21,14 +21,28 @@ function activate(context) {
     () => {
       // First, create a CMake project using the cmake tools extension from microsoft
       // TODO doesn't work if the user presses create new cmakelists
+      // I have kind of fixed this by displaying an error message
       vscode.commands.executeCommand('cmake.quickStart').then(() => {
+        // If there is no active folder, exit command
+        // TODO The CMake tools extension throws error, so this isn't needed
+        if (vscode.workspace.workspaceFolders === undefined) {
+          vscode.window.showErrorMessage('Error: Please open a folder first.');
+          return;
+        }
+
         const folderPath = vscode.workspace.workspaceFolders[0].uri
           .toString()
           .split(':')[1];
 
-        // If there is no active folder, exit command
-        if (vscode.workspace.workspaceFolders === undefined) {
-          vscode.window.showErrorMessage('Error: Please open a folder first.');
+        // Cancel if the CMake Tools extension didn't work
+        if (!fs.existsSync(path.join(folderPath, 'CMakeLists.txt'))) {
+          vscode.window.showErrorMessage(
+            'CMake Tools extenstion failed to create project, please exit and try again'
+          );
+          // TODO delete build folder
+          fs.rmdir(path.join(folderPath, 'build'), (err) => {
+            vscode.window.showErrorMessage('Error deleting build folder'); // TODO make this error message better
+          });
           return;
         }
 
