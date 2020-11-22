@@ -2,6 +2,8 @@
   "name": "cpp-cmake-project-generator",
   "displayName": "cpp + cmake project generator",
   "description": "An extension used for creating cpp projects with cmake.",
+  "publisher": "CallumIrving",
+  "repository": "github:sodium-chloride/vscode-cmake-cpp-project-generator",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.51.0"
